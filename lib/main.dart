@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'controllers/theme_controller.dart';
 import 'theme/app_theme.dart';
 import 'utils/responsive.dart';
 import 'sections/navbar_section.dart';
@@ -14,144 +16,106 @@ void main() {
   runApp(const PortfolioApp());
 }
 
-class PortfolioApp extends StatefulWidget {
+class PortfolioApp extends StatelessWidget {
   const PortfolioApp({super.key});
 
   @override
-  State<PortfolioApp> createState() => _PortfolioAppState();
-}
-
-class _PortfolioAppState extends State<PortfolioApp> {
-  bool _isDarkMode = true;
-
-  void _toggleTheme() {
-    setState(() {
-      _isDarkMode = !_isDarkMode;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Abdul Rahim | Portfolio',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: _isDarkMode ? ThemeMode.dark : ThemeMode.light,
-      home: PortfolioHome(
-        isDarkMode: _isDarkMode,
-        onToggleTheme: _toggleTheme,
+    final themeController = Get.put(ThemeController());
+
+    return Obx(
+      () => GetMaterialApp(
+        title: 'Abdul Rahim | Portfolio',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
+        themeMode: themeController.themeMode,
+        home: const PortfolioHome(),
       ),
     );
   }
 }
 
-class PortfolioHome extends StatefulWidget {
-  final bool isDarkMode;
-  final VoidCallback onToggleTheme;
-
-  const PortfolioHome({
-    super.key,
-    required this.isDarkMode,
-    required this.onToggleTheme,
-  });
-
-  @override
-  State<PortfolioHome> createState() => _PortfolioHomeState();
-}
-
-class _PortfolioHomeState extends State<PortfolioHome> {
-  final ScrollController _scrollController = ScrollController();
-
-  final GlobalKey _aboutKey = GlobalKey();
-  final GlobalKey _skillsKey = GlobalKey();
-  final GlobalKey _experienceKey = GlobalKey();
-  final GlobalKey _projectsKey = GlobalKey();
-  final GlobalKey _contactKey = GlobalKey();
-
-  void _scrollToSection(String section) {
-    GlobalKey? key;
-    switch (section) {
-      case 'about':
-        key = _aboutKey;
-        break;
-      case 'skills':
-        key = _skillsKey;
-        break;
-      case 'experience':
-        key = _experienceKey;
-        break;
-      case 'projects':
-        key = _projectsKey;
-        break;
-      case 'contact':
-        key = _contactKey;
-        break;
-    }
-
-    if (key?.currentContext != null) {
-      Scrollable.ensureVisible(
-        key!.currentContext!,
-        duration: const Duration(milliseconds: 800),
-        curve: Curves.easeInOut,
-      );
-    }
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
+class PortfolioHome extends StatelessWidget {
+  const PortfolioHome({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final themeController = Get.find<ThemeController>();
+
+    final aboutKey = GlobalKey();
+    final skillsKey = GlobalKey();
+    final experienceKey = GlobalKey();
+    final projectsKey = GlobalKey();
+    final contactKey = GlobalKey();
+
+    void scrollToSection(String section) {
+      GlobalKey? key;
+      switch (section) {
+        case 'about':
+          key = aboutKey;
+          break;
+        case 'skills':
+          key = skillsKey;
+          break;
+        case 'experience':
+          key = experienceKey;
+          break;
+        case 'projects':
+          key = projectsKey;
+          break;
+        case 'contact':
+          key = contactKey;
+          break;
+      }
+
+      if (key?.currentContext != null) {
+        Scrollable.ensureVisible(
+          key!.currentContext!,
+          duration: const Duration(milliseconds: 800),
+          curve: Curves.easeInOut,
+        );
+      }
+    }
+
     return Scaffold(
       body: Stack(
         children: [
-          // Main content
           CustomScrollView(
-            controller: _scrollController,
             slivers: [
-              // Navbar
               SliverAppBar(
                 floating: true,
                 snap: true,
                 backgroundColor: Colors.transparent,
                 elevation: 0,
                 toolbarHeight: 80,
-                flexibleSpace: NavbarSection(
-                  isDarkMode: widget.isDarkMode,
-                  onToggleTheme: widget.onToggleTheme,
-                  onNavTap: _scrollToSection,
+                flexibleSpace: Obx(
+                  () => NavbarSection(
+                    isDarkMode: themeController.isDarkMode,
+                    onToggleTheme: themeController.toggleTheme,
+                    onNavTap: scrollToSection,
+                  ),
                 ),
               ),
-
-              // Sections
               SliverToBoxAdapter(
                 child: Column(
                   children: [
-                    HeroSection(onNavTap: _scrollToSection),
-                    Container(key: _aboutKey, child: const AboutSection()),
-                    Container(key: _skillsKey, child: const SkillsSection()),
-                    Container(key: _experienceKey, child: const ExperienceSection()),
-                    Container(key: _projectsKey, child: const ProjectsSection()),
-                    Container(key: _contactKey, child: const ContactSection()),
+                    HeroSection(onNavTap: scrollToSection),
+                    Container(key: aboutKey, child: const AboutSection()),
+                    Container(key: skillsKey, child: const SkillsSection()),
+                    Container(key: experienceKey, child: const ExperienceSection()),
+                    Container(key: projectsKey, child: const ProjectsSection()),
+                    Container(key: contactKey, child: const ContactSection()),
                     const FooterSection(),
                   ],
                 ),
               ),
             ],
           ),
-
-          // Floating theme toggle (mobile)
-          Positioned(
+          const Positioned(
             bottom: 24,
             right: 24,
-            child: _FloatingThemeToggle(
-              isDarkMode: widget.isDarkMode,
-              onToggle: widget.onToggleTheme,
-            ),
+            child: _FloatingThemeToggle(),
           ),
         ],
       ),
@@ -159,50 +123,41 @@ class _PortfolioHomeState extends State<PortfolioHome> {
   }
 }
 
-class _FloatingThemeToggle extends StatefulWidget {
-  final bool isDarkMode;
-  final VoidCallback onToggle;
-
-  const _FloatingThemeToggle({
-    required this.isDarkMode,
-    required this.onToggle,
-  });
-
-  @override
-  State<_FloatingThemeToggle> createState() => _FloatingThemeToggleState();
-}
-
-class _FloatingThemeToggleState extends State<_FloatingThemeToggle> {
-  bool _isHovered = false;
+class _FloatingThemeToggle extends StatelessWidget {
+  const _FloatingThemeToggle();
 
   @override
   Widget build(BuildContext context) {
-    // Hide on tablet and larger screens
+    final themeController = Get.find<ThemeController>();
+    final isHovered = false.obs;
+
     if (Responsive.isDesktopOrLarger(context)) return const SizedBox.shrink();
 
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      child: GestureDetector(
-        onTap: widget.onToggle,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            gradient: AppTheme.primaryGradient,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: AppTheme.primaryBlue.withValues(alpha: _isHovered ? 0.5 : 0.3),
-                blurRadius: _isHovered ? 20 : 15,
-                offset: const Offset(0, 5),
-              ),
-            ],
-          ),
-          child: Icon(
-            widget.isDarkMode ? Icons.light_mode : Icons.dark_mode,
-            color: Colors.white,
-            size: 24,
+    return Obx(
+      () => MouseRegion(
+        onEnter: (_) => isHovered.value = true,
+        onExit: (_) => isHovered.value = false,
+        child: GestureDetector(
+          onTap: themeController.toggleTheme,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              gradient: AppTheme.primaryGradient,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: AppTheme.primaryBlue.withValues(alpha: isHovered.value ? 0.5 : 0.3),
+                  blurRadius: isHovered.value ? 20 : 15,
+                  offset: const Offset(0, 5),
+                ),
+              ],
+            ),
+            child: Icon(
+              themeController.isDarkMode ? Icons.light_mode : Icons.dark_mode,
+              color: Colors.white,
+              size: 24,
+            ),
           ),
         ),
       ),

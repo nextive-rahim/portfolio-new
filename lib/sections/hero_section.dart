@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:portfolio_flutter/src/core/gen/assets.gen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../data/data.dart';
 import '../theme/app_theme.dart';
@@ -286,8 +287,8 @@ class _HeroSectionState extends State<HeroSection>
             ],
           ),
           child: ClipOval(
-            child: Image.network(
-              'https://api.dicebear.com/7.x/avataaars/svg?seed=AbdulRahim&backgroundColor=2563eb',
+            child: Image.asset(
+           Assets.images.profile.path,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
                 return Container(
