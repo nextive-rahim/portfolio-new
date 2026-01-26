@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../data/data.dart';
+import '../src/core/gen/assets.gen.dart';
 import '../theme/app_theme.dart';
 import '../utils/responsive.dart';
 import '../widgets/reveal_on_scroll.dart';
@@ -40,10 +41,22 @@ class SkillsSection extends StatelessWidget {
             child: Column(
               children: [
                 _buildSectionHeader(context, isDark),
-                SizedBox(height: context.responsive<double>(mobile: 32, tablet: 40, desktop: 48)),
+                SizedBox(
+                  height: context.responsive<double>(
+                    mobile: 32,
+                    tablet: 40,
+                    desktop: 48,
+                  ),
+                ),
                 _buildSkillsGrid(context, isDark),
-                SizedBox(height: context.responsive<double>(mobile: 48, tablet: 56, desktop: 64)),
-                _buildTechMarquee(context, isDark),
+                SizedBox(
+                  height: context.responsive<double>(
+                    mobile: 48,
+                    tablet: 56,
+                    desktop: 64,
+                  ),
+                ),
+                _buildTechList(context, isDark),
               ],
             ),
           ),
@@ -119,7 +132,11 @@ class SkillsSection extends StatelessWidget {
       },
     ];
 
-    final spacing = context.responsive<double>(mobile: 16, tablet: 20, desktop: 24);
+    final spacing = context.responsive<double>(
+      mobile: 16,
+      tablet: 20,
+      desktop: 24,
+    );
 
     final screenWidth = MediaQuery.of(context).size.width;
     final columnsCount = context.responsive<int>(
@@ -151,65 +168,137 @@ class SkillsSection extends StatelessWidget {
     );
   }
 
-  Widget _buildTechMarquee(BuildContext context, bool isDark) {
+  Widget _buildTechList(BuildContext context, bool isDark) {
     final technologies = [
-      'Flutter',
-      'Dart',
-      'Node.js',
-      'NestJS',
-      'Express.js',
-      'MongoDB',
-      'PostgreSQL',
-      'Firebase',
-      'REST API',
-      'GraphQL',
-      'GetX',
-      'Bloc',
-      'Riverpod',
-      'Git',
-      'Docker',
+      {'name': 'Flutter', 'image': Assets.images.flutter},
+      {'name': 'Dart', 'image': Assets.images.dartJpg},
+      {'name': 'GetX', 'image': Assets.images.getx},
+      {'name': 'Bloc', 'image': Assets.images.bloc},
+      {'name': 'Riverpod', 'image': Assets.images.riverpod},
+      {'name': 'Node.js', 'image': Assets.images.nodeJs},
+      {'name': 'NestJS', 'image': Assets.images.nestJs},
+      {'name': 'Express.js', 'image': Assets.images.expressJs},
+      {'name': 'MongoDB', 'image': Assets.images.mongodb},
+      {'name': 'PostgreSQL', 'image': Assets.images.postgreSQL},
+      {'name': 'GraphSQL', 'image': Assets.images.grapSql},
+      {'name': 'Firebase', 'image': Assets.images.firebase},
+      {'name': 'REST API', 'image': Assets.images.restApi},
+
+      {'name': 'Git', 'image': Assets.images.git},
+      {'name': 'GitHub', 'image': Assets.images.gitHub},
+      {'name': 'Docker', 'image': Assets.images.docker},
+      {'name': 'Figma', 'image': Assets.images.figma},
+      {'name': 'Android Studio', 'image': Assets.images.androidStudio},
+      {'name': 'Xcode', 'image': Assets.images.xcode},
+      {'name': 'VS Code', 'image': Assets.images.vscode},
+      {'name': 'Claude AI', 'image': Assets.images.claude},
+      {'name': 'Postman', 'image': Assets.images.postman},
     ];
+
+    final spacing = context.responsive<double>(
+      mobile: 16,
+      tablet: 20,
+      desktop: 24,
+    );
+    final imageSize = context.responsive<double>(
+      mobile: 40,
+      tablet: 48,
+      desktop: 56,
+    );
 
     return Column(
       children: [
-        Text(
-          'Technologies I Work With',
-          style: TextStyle(
-            fontSize: context.responsive<double>(mobile: 16, tablet: 17, desktop: 18),
-            fontWeight: FontWeight.w600,
-            color: isDark ? Colors.white70 : Colors.grey.shade700,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.build_circle,
+              color: AppTheme.primaryBlue,
+              size: context.responsive<double>(
+                mobile: 20,
+                tablet: 22,
+                desktop: 24,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Text(
+              'Technologies I Work With',
+              style: TextStyle(
+                fontSize: context.responsive<double>(
+                  mobile: 16,
+                  tablet: 17,
+                  desktop: 18,
+                ),
+                fontWeight: FontWeight.w600,
+                color: isDark ? Colors.white70 : Colors.grey.shade700,
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 24),
-        SizedBox(
-          height: 50,
-          child: _MarqueeWidget(
-            children: technologies.map((tech) {
-              return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 12),
-                padding: EdgeInsets.symmetric(
-                  horizontal: context.responsive<double>(mobile: 16, tablet: 18, desktop: 20),
-                  vertical: 12,
+        Wrap(
+          spacing: spacing,
+          runSpacing: spacing,
+          alignment: WrapAlignment.center,
+          children: List.generate(technologies.length, (index) {
+            final tech = technologies[index];
+            return Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: context.responsive<double>(
+                  mobile: 16,
+                  tablet: 20,
+                  desktop: 24,
                 ),
-                decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF1E293B) : Colors.white,
-                  borderRadius: BorderRadius.circular(25),
-                  border: Border.all(
-                    color: isDark
-                        ? Colors.white.withValues(alpha: 0.1)
-                        : Colors.grey.shade200,
+                vertical: context.responsive<double>(
+                  mobile: 14,
+                  tablet: 16,
+                  desktop: 20,
+                ),
+              ),
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: isDark
+                      ? Colors.white.withValues(alpha: 0.1)
+                      : Colors.grey.shade200,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
                   ),
-                ),
-                child: Text(
-                  tech,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    color: isDark ? Colors.white70 : Colors.grey.shade700,
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: (tech['image'] as AssetGenImage).image(
+                      width: imageSize,
+                      height: imageSize,
+                      fit: BoxFit.fill,
+                    ),
                   ),
-                ),
-              );
-            }).toList(),
-          ),
+                  const SizedBox(height: 10),
+                  Text(
+                    tech['name'] as String,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: context.responsive<double>(
+                        mobile: 12,
+                        tablet: 13,
+                        desktop: 14,
+                      ),
+                      color: isDark ? Colors.white70 : Colors.grey.shade700,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
         ),
       ],
     );
@@ -265,8 +354,8 @@ class _SkillCardState extends State<_SkillCard> {
             color: _isHovered
                 ? widget.color
                 : (widget.isDark
-                    ? Colors.white.withValues(alpha: 0.05)
-                    : Colors.grey.shade200),
+                      ? Colors.white.withValues(alpha: 0.05)
+                      : Colors.grey.shade200),
           ),
           boxShadow: _isHovered
               ? [
@@ -274,7 +363,7 @@ class _SkillCardState extends State<_SkillCard> {
                     color: widget.color.withValues(alpha: 0.2),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
-                  )
+                  ),
                 ]
               : [],
         ),
@@ -284,7 +373,13 @@ class _SkillCardState extends State<_SkillCard> {
             Row(
               children: [
                 Container(
-                  padding: EdgeInsets.all(context.responsive<double>(mobile: 10, tablet: 11, desktop: 12)),
+                  padding: EdgeInsets.all(
+                    context.responsive<double>(
+                      mobile: 10,
+                      tablet: 11,
+                      desktop: 12,
+                    ),
+                  ),
                   decoration: BoxDecoration(
                     color: widget.color.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
@@ -292,7 +387,11 @@ class _SkillCardState extends State<_SkillCard> {
                   child: Icon(
                     widget.icon,
                     color: widget.color,
-                    size: context.responsive<double>(mobile: 20, tablet: 22, desktop: 24),
+                    size: context.responsive<double>(
+                      mobile: 20,
+                      tablet: 22,
+                      desktop: 24,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -302,14 +401,22 @@ class _SkillCardState extends State<_SkillCard> {
                     style: TextStyle(
                       fontSize: titleSize,
                       fontWeight: FontWeight.w700,
-                      color: widget.isDark ? Colors.white : Colors.grey.shade900,
+                      color: widget.isDark
+                          ? Colors.white
+                          : Colors.grey.shade900,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
             ),
-            SizedBox(height: context.responsive<double>(mobile: 16, tablet: 18, desktop: 20)),
+            SizedBox(
+              height: context.responsive<double>(
+                mobile: 16,
+                tablet: 18,
+                desktop: 20,
+              ),
+            ),
             Wrap(
               spacing: 8,
               runSpacing: 8,
@@ -328,8 +435,14 @@ class _SkillCardState extends State<_SkillCard> {
                   child: Text(
                     skill,
                     style: TextStyle(
-                      fontSize: context.responsive<double>(mobile: 12, tablet: 12, desktop: 13),
-                      color: widget.isDark ? Colors.white70 : Colors.grey.shade700,
+                      fontSize: context.responsive<double>(
+                        mobile: 12,
+                        tablet: 12,
+                        desktop: 13,
+                      ),
+                      color: widget.isDark
+                          ? Colors.white70
+                          : Colors.grey.shade700,
                     ),
                   ),
                 );
@@ -337,59 +450,6 @@ class _SkillCardState extends State<_SkillCard> {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _MarqueeWidget extends StatefulWidget {
-  final List<Widget> children;
-
-  const _MarqueeWidget({required this.children});
-
-  @override
-  State<_MarqueeWidget> createState() => _MarqueeWidgetState();
-}
-
-class _MarqueeWidgetState extends State<_MarqueeWidget>
-    with SingleTickerProviderStateMixin {
-  late ScrollController _scrollController;
-  late AnimationController _animationController;
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = ScrollController();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 30),
-    )..repeat();
-
-    _animationController.addListener(() {
-      if (_scrollController.hasClients &&
-          _scrollController.position.hasContentDimensions) {
-        final maxScroll = _scrollController.position.maxScrollExtent;
-        final currentScroll = maxScroll * _animationController.value;
-        _scrollController.jumpTo(currentScroll);
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      controller: _scrollController,
-      scrollDirection: Axis.horizontal,
-      physics: const NeverScrollableScrollPhysics(),
-      child: Row(
-        children: [...widget.children, ...widget.children],
       ),
     );
   }

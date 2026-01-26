@@ -103,7 +103,10 @@ class PortfolioHome extends StatelessWidget {
                     HeroSection(onNavTap: scrollToSection),
                     Container(key: aboutKey, child: const AboutSection()),
                     Container(key: skillsKey, child: const SkillsSection()),
-                    Container(key: experienceKey, child: const ExperienceSection()),
+                    Container(
+                      key: experienceKey,
+                      child: const ExperienceSection(),
+                    ),
                     Container(key: projectsKey, child: const ProjectsSection()),
                     Container(key: contactKey, child: const ContactSection()),
                     const FooterSection(),
@@ -147,7 +150,9 @@ class _FloatingThemeToggle extends StatelessWidget {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: AppTheme.primaryBlue.withValues(alpha: isHovered.value ? 0.5 : 0.3),
+                  color: AppTheme.primaryBlue.withValues(
+                    alpha: isHovered.value ? 0.5 : 0.3,
+                  ),
                   blurRadius: isHovered.value ? 20 : 15,
                   offset: const Offset(0, 5),
                 ),

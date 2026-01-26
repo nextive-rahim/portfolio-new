@@ -171,7 +171,7 @@ class ProjectsSection extends StatelessWidget {
 
   Widget _buildStatsBanner(BuildContext context, bool isDark) {
     final stats = [
-      {'icon': FontAwesomeIcons.android, 'value': '2+', 'label': 'Android Apps'},
+      {'icon': FontAwesomeIcons.android, 'value': '40+', 'label': 'Android Apps'},
       {'icon': FontAwesomeIcons.apple, 'value': '8+', 'label': 'iOS Apps'},
       {'icon': Icons.code, 'value': '5+', 'label': 'Backend Projects'},
       {'icon': Icons.speed, 'value': '60%', 'label': 'Performance Boost'},
