@@ -357,17 +357,18 @@ class _ProjectCardState extends State<_ProjectCard> {
               ),
             ),
             const SizedBox(height: 8),
-            Text(
-              widget.project.description,
-              style: TextStyle(
-                fontSize: context.responsive<double>(mobile: 13, tablet: 14, desktop: 15),
-                height: 1.5,
-                color: widget.isDark ? Colors.white70 : Colors.grey.shade600,
+            Expanded(
+              child: Text(
+                widget.project.description,
+                style: TextStyle(
+                  fontSize: context.responsive<double>(mobile: 13, tablet: 14, desktop: 15),
+                  height: 1.5,
+                  color: widget.isDark ? Colors.white70 : Colors.grey.shade600,
+                ),
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
               ),
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
             ),
-            const Spacer(),
             Wrap(
               spacing: 8,
               runSpacing: 8,
