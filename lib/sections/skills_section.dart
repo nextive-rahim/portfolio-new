@@ -195,14 +195,25 @@ class SkillsSection extends StatelessWidget {
     ];
 
     final spacing = context.responsive<double>(
-      mobile: 16,
-      tablet: 20,
-      desktop: 24,
+      mobile: 12,
+      tablet: 16,
+      desktop: 20,
     );
     final imageSize = context.responsive<double>(
       mobile: 40,
       tablet: 48,
       desktop: 56,
+    );
+    final crossAxisCount = context.responsive<int>(
+      mobile: 3,
+      tablet: 4,
+      desktop: 5,
+      largeDesktop: 7,
+    );
+    final tileExtent = context.responsive<double>(
+      mobile: 110,
+      tablet: 130,
+      desktop: 150,
     );
 
     return Column(
@@ -220,39 +231,41 @@ class SkillsSection extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 10),
-            Text(
-              'Technologies I Work With',
-              style: TextStyle(
-                fontSize: context.responsive<double>(
-                  mobile: 16,
-                  tablet: 17,
-                  desktop: 18,
+            Flexible(
+              child: Text(
+                'Technologies I Work With',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: context.responsive<double>(
+                    mobile: 16,
+                    tablet: 17,
+                    desktop: 18,
+                  ),
+                  fontWeight: FontWeight.w600,
+                  color: isDark ? Colors.white70 : Colors.grey.shade700,
                 ),
-                fontWeight: FontWeight.w600,
-                color: isDark ? Colors.white70 : Colors.grey.shade700,
               ),
             ),
           ],
         ),
         const SizedBox(height: 24),
-        Wrap(
-          spacing: spacing,
-          runSpacing: spacing,
-          alignment: WrapAlignment.center,
-          children: List.generate(technologies.length, (index) {
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          padding: EdgeInsets.zero,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            crossAxisSpacing: spacing,
+            mainAxisSpacing: spacing,
+            mainAxisExtent: tileExtent,
+          ),
+          itemCount: technologies.length,
+          itemBuilder: (context, index) {
             final tech = technologies[index];
             return Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: context.responsive<double>(
-                  mobile: 16,
-                  tablet: 20,
-                  desktop: 24,
-                ),
-                vertical: context.responsive<double>(
-                  mobile: 14,
-                  tablet: 16,
-                  desktop: 20,
-                ),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 12,
               ),
               decoration: BoxDecoration(
                 color: isDark ? const Color(0xFF1E293B) : Colors.white,
@@ -271,6 +284,7 @@ class SkillsSection extends StatelessWidget {
                 ],
               ),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   ClipRRect(
@@ -284,6 +298,9 @@ class SkillsSection extends StatelessWidget {
                   const SizedBox(height: 10),
                   Text(
                     tech['name'] as String,
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: context.responsive<double>(
@@ -297,7 +314,7 @@ class SkillsSection extends StatelessWidget {
                 ],
               ),
             );
-          }),
+          },
         ),
       ],
     );
