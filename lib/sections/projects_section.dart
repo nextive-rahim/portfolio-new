@@ -386,7 +386,7 @@ class _ProjectCardState extends State<_ProjectCard> {
                     feature,
                     style: TextStyle(
                       fontSize: context.responsive<double>(mobile: 10, tablet: 11, desktop: 12),
-                      color: AppTheme.primaryBlue,
+                      color: widget.isDark ? Colors.white : AppTheme.primaryBlue,
                       fontWeight: FontWeight.w500,
                     ),
                   ),

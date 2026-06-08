@@ -186,7 +186,6 @@ class SkillsSection extends StatelessWidget {
 
       {'name': 'Git', 'image': Assets.images.git},
       {'name': 'GitHub', 'image': Assets.images.gitHub},
-      {'name': 'Docker', 'image': Assets.images.docker},
       {'name': 'Figma', 'image': Assets.images.figma},
       {'name': 'Android Studio', 'image': Assets.images.androidStudio},
       {'name': 'Xcode', 'image': Assets.images.xcode},

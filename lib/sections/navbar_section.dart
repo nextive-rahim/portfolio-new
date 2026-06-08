@@ -7,12 +7,16 @@ class NavbarSection extends StatefulWidget {
   final bool isDarkMode;
   final VoidCallback onToggleTheme;
   final Function(String) onNavTap;
+  final bool isScrolled;
+  final String? activeSection;
 
   const NavbarSection({
     super.key,
     required this.isDarkMode,
     required this.onToggleTheme,
     required this.onNavTap,
+    this.isScrolled = false,
+    this.activeSection,
   });
 
   @override
@@ -43,15 +47,16 @@ class _NavbarSectionState extends State<NavbarSection> {
     return ClipRRect(
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-        child: Container(
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
           padding: EdgeInsets.symmetric(
             horizontal: horizontalPadding,
-            vertical: 16,
+            vertical: widget.isScrolled ? 10 : 16,
           ),
           decoration: BoxDecoration(
             color: widget.isDarkMode
-                ? const Color(0xFF0F172A).withValues(alpha: 0.8)
-                : Colors.white.withValues(alpha: 0.8),
+                ? const Color(0xFF0F172A).withValues(alpha: widget.isScrolled ? 0.9 : 0.8)
+                : Colors.white.withValues(alpha: widget.isScrolled ? 0.9 : 0.8),
             border: Border(
               bottom: BorderSide(
                 color: widget.isDarkMode
@@ -59,6 +64,15 @@ class _NavbarSectionState extends State<NavbarSection> {
                     : Colors.grey.shade200,
               ),
             ),
+            boxShadow: widget.isScrolled
+                ? [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: widget.isDarkMode ? 0.3 : 0.08),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
+                    ),
+                  ]
+                : [],
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -73,6 +87,7 @@ class _NavbarSectionState extends State<NavbarSection> {
                     return _NavItem(
                       label: item,
                       isDark: widget.isDarkMode,
+                      isActive: widget.activeSection == item.toLowerCase(),
                       onTap: () => widget.onNavTap(item.toLowerCase()),
                     );
                   }).toList(),
@@ -340,12 +355,14 @@ class _MobileMenuItemState extends State<_MobileMenuItem> {
 class _NavItem extends StatefulWidget {
   final String label;
   final bool isDark;
+  final bool isActive;
   final VoidCallback onTap;
 
   const _NavItem({
     required this.label,
     required this.isDark,
     required this.onTap,
+    this.isActive = false,
   });
 
   @override
@@ -357,6 +374,8 @@ class _NavItemState extends State<_NavItem> {
 
   @override
   Widget build(BuildContext context) {
+    final isHighlighted = _isHovered || widget.isActive;
+
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
@@ -364,14 +383,31 @@ class _NavItemState extends State<_NavItem> {
         onTap: widget.onTap,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Text(
-            widget.label,
-            style: TextStyle(
-              color: _isHovered
-                  ? AppTheme.primaryBlue
-                  : (widget.isDark ? Colors.white70 : Colors.grey.shade700),
-              fontWeight: FontWeight.w500,
-            ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AnimatedDefaultTextStyle(
+                duration: const Duration(milliseconds: 200),
+                style: TextStyle(
+                  color: isHighlighted
+                      ? AppTheme.primaryBlue
+                      : (widget.isDark ? Colors.white70 : Colors.grey.shade700),
+                  fontWeight:
+                      widget.isActive ? FontWeight.w700 : FontWeight.w500,
+                ),
+                child: Text(widget.label),
+              ),
+              const SizedBox(height: 4),
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                height: 2,
+                width: widget.isActive ? 20 : 0,
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryBlue,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ],
           ),
         ),
       ),

@@ -98,6 +98,18 @@ const resumeData = ResumeData(
   ),
   majorProjects: [
     Project(
+      name: "eTestPaper",
+      link: "https://apps.apple.com/us/app/etestpaper/id6749287735",
+      description:
+          "Fully optimized exam app rendering complex math equations with a beautiful, performant API.",
+      features: [
+        "KaTeX & LaTeX Rendering",
+        "Math Equations",
+        "Progress Tracking",
+        "Beautiful API",
+      ],
+    ),
+    Project(
       name: "BCS Doctor",
       link:
           "https://play.google.com/store/apps/details?id=com.nextive.bcsdoctor&hl=en",

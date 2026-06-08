@@ -36,71 +36,118 @@ class PortfolioApp extends StatelessWidget {
   }
 }
 
-class PortfolioHome extends StatelessWidget {
+class PortfolioHome extends StatefulWidget {
   const PortfolioHome({super.key});
+
+  @override
+  State<PortfolioHome> createState() => _PortfolioHomeState();
+}
+
+class _PortfolioHomeState extends State<PortfolioHome> {
+  final ScrollController _scrollController = ScrollController();
+
+  final aboutKey = GlobalKey();
+  final skillsKey = GlobalKey();
+  final experienceKey = GlobalKey();
+  final projectsKey = GlobalKey();
+  final contactKey = GlobalKey();
+
+  bool _isScrolled = false;
+  String _activeSection = 'about';
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    final scrolled = _scrollController.offset > 10;
+    if (scrolled != _isScrolled) {
+      setState(() => _isScrolled = scrolled);
+    }
+    _updateActiveSection();
+  }
+
+  void _updateActiveSection() {
+    final sections = <String, GlobalKey>{
+      'about': aboutKey,
+      'skills': skillsKey,
+      'experience': experienceKey,
+      'projects': projectsKey,
+      'contact': contactKey,
+    };
+
+    // The last section whose top has scrolled above the navbar is the active
+    // one; default to the first item ('about') while still near the top.
+    const triggerOffset = 120.0;
+    String current = 'about';
+    for (final entry in sections.entries) {
+      final ctx = entry.value.currentContext;
+      if (ctx == null) continue;
+      final box = ctx.findRenderObject() as RenderBox?;
+      if (box == null) continue;
+      final top = box.localToGlobal(Offset.zero).dy;
+      if (top <= triggerOffset) {
+        current = entry.key;
+      }
+    }
+
+    if (current != _activeSection) {
+      setState(() => _activeSection = current);
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollToSection(String section) {
+    GlobalKey? key;
+    switch (section) {
+      case 'about':
+        key = aboutKey;
+        break;
+      case 'skills':
+        key = skillsKey;
+        break;
+      case 'experience':
+        key = experienceKey;
+        break;
+      case 'projects':
+        key = projectsKey;
+        break;
+      case 'contact':
+        key = contactKey;
+        break;
+    }
+
+    if (key?.currentContext != null) {
+      Scrollable.ensureVisible(
+        key!.currentContext!,
+        duration: const Duration(milliseconds: 800),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final themeController = Get.find<ThemeController>();
 
-    final aboutKey = GlobalKey();
-    final skillsKey = GlobalKey();
-    final experienceKey = GlobalKey();
-    final projectsKey = GlobalKey();
-    final contactKey = GlobalKey();
-
-    void scrollToSection(String section) {
-      GlobalKey? key;
-      switch (section) {
-        case 'about':
-          key = aboutKey;
-          break;
-        case 'skills':
-          key = skillsKey;
-          break;
-        case 'experience':
-          key = experienceKey;
-          break;
-        case 'projects':
-          key = projectsKey;
-          break;
-        case 'contact':
-          key = contactKey;
-          break;
-      }
-
-      if (key?.currentContext != null) {
-        Scrollable.ensureVisible(
-          key!.currentContext!,
-          duration: const Duration(milliseconds: 800),
-          curve: Curves.easeInOut,
-        );
-      }
-    }
-
     return Scaffold(
       body: Stack(
         children: [
           CustomScrollView(
+            controller: _scrollController,
             slivers: [
-              SliverAppBar(
-                floating: true,
-                snap: true,
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                toolbarHeight: 80,
-                flexibleSpace: Obx(
-                  () => NavbarSection(
-                    isDarkMode: themeController.isDarkMode,
-                    onToggleTheme: themeController.toggleTheme,
-                    onNavTap: scrollToSection,
-                  ),
-                ),
-              ),
               SliverToBoxAdapter(
                 child: Column(
                   children: [
-                    HeroSection(onNavTap: scrollToSection),
+                    HeroSection(onNavTap: _scrollToSection),
                     Container(key: aboutKey, child: const AboutSection()),
                     Container(key: skillsKey, child: const SkillsSection()),
                     Container(
@@ -114,6 +161,15 @@ class PortfolioHome extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+          Obx(
+            () => NavbarSection(
+              isDarkMode: themeController.isDarkMode,
+              onToggleTheme: themeController.toggleTheme,
+              onNavTap: _scrollToSection,
+              isScrolled: _isScrolled,
+              activeSection: _activeSection,
+            ),
           ),
           const Positioned(
             bottom: 24,
